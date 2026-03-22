@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
 builder.Configuration.AddBlobJson(
-    account: "myaccount",
+    account: "stbrokuldev",
     container: "myconfig",
     blobName: "config.json",
     credential: new AzureCliCredential(),

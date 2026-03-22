@@ -79,27 +79,24 @@ public class BlobStorageConfigurationProvider(
             await _semaphore.WaitAsync(ct);
             entered = true;
 
-            BlobDownloadResult result;
-            try
+            var options = new BlobDownloadOptions();
+
+            if (_etag is not null)
             {
-                var options = new BlobDownloadOptions();
-
-                if (_etag is not null)
+                options.Conditions = new BlobRequestConditions
                 {
-                    options.Conditions = new BlobRequestConditions
-                    {
-                        IfNoneMatch = _etag.Value
-                    };
-                }
-
-                var response = await _blob.DownloadContentAsync(options, ct);
-                result = response.Value;
+                    IfNoneMatch = _etag.Value
+                };
             }
-            catch (RequestFailedException ex) when (ex.Status == 304)
+
+            var response = await _blob.DownloadContentAsync(options, ct);
+
+            if (response.GetRawResponse().Status == 304)
             {
                 return; // Blob unchanged
             }
 
+            var result = response.Value;
             await using var stream = result.Content.ToStream();
             var config = new ConfigurationBuilder()
                 .AddJsonStream(stream)
