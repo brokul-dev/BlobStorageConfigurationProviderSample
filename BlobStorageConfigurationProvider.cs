@@ -56,7 +56,7 @@ public class BlobStorageConfigurationProvider(
                 }
                 catch (Exception ex)
                 {
-                    logger?.LogWarning(
+                    logger.LogWarning(
                         ex,
                         "Failed to refresh configuration from blob '{BlobUri}'. Keeping last known good configuration.",
                         _blob.Uri);
