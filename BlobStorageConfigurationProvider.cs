@@ -6,12 +6,14 @@ using Azure.Storage.Blobs.Models;
 namespace BlobStorageConfigurationProviderSample;
 
 public class BlobStorageConfigurationProvider(
-    string account, string container, string blobName, TokenCredential credential, ILogger logger) : ConfigurationProvider, IDisposable
+    string account, string container, string blobName, 
+    TokenCredential credential, ILogger logger) : ConfigurationProvider, IDisposable
 {
     private static readonly TimeSpan DefaultRefreshInterval = TimeSpan.FromMinutes(1);
 
     private readonly BlobClient _blob = new BlobContainerClient(
-            new Uri($"https://{account}.blob.core.windows.net/{container}"), credential).GetBlobClient(blobName);
+            new Uri($"https://{account}.blob.core.windows.net/{container}"), credential)
+            .GetBlobClient(blobName);
 
     private readonly CancellationTokenSource _cts = new();
     private readonly SemaphoreSlim _semaphore = new(1, 1);
@@ -58,7 +60,8 @@ public class BlobStorageConfigurationProvider(
                 {
                     logger.LogWarning(
                         ex,
-                        "Failed to refresh configuration from blob '{BlobUri}'. Keeping last known good configuration.",
+                        "Failed to refresh configuration from blob '{BlobUri}'. " + 
+                        "Keeping last known good configuration.",
                         _blob.Uri);
                 }
             }
