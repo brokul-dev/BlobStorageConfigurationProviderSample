@@ -7,13 +7,9 @@ public sealed class BlobStorageConfigurationSource(
     string container,
     string blobName,
     TokenCredential credential,
-    ILoggerFactory loggerFactory) : IConfigurationSource
+    ILogger logger) : IConfigurationSource
 {
     public IConfigurationProvider Build(IConfigurationBuilder _) =>
         new BlobStorageConfigurationProvider(
-            account,
-            container,
-            blobName,
-            credential,
-            loggerFactory.CreateLogger<BlobStorageConfigurationProvider>());
+            account, container, blobName, credential, logger);
 }

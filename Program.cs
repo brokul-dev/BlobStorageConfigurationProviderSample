@@ -2,14 +2,25 @@ using Azure.Identity;
 using BlobStorageConfigurationProviderSample;
 
 var builder = WebApplication.CreateBuilder(args);
-var app = builder.Build();
+
+// TODO: replace with your own bootstrap logger 
+var loggerFactory = LoggerFactory.Create(builder =>
+{
+    builder
+        .AddConsole()
+        .SetMinimumLevel(LogLevel.Information);
+});
+
+var logger = loggerFactory.CreateLogger("Bootstrap");
 
 builder.Configuration.AddBlobJson(
     account: "stbrokuldev",
     container: "myconfig",
     blobName: "config.json",
     credential: new AzureCliCredential(),
-    loggerFactory: app.Services.GetRequiredService<ILoggerFactory>());
+    logger: logger);
+
+var app = builder.Build();
 
 app.MapGet("/", (IConfiguration configuration) =>
 {

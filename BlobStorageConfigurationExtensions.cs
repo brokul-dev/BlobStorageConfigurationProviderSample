@@ -11,8 +11,8 @@ public static class BlobStorageConfigurationExtensions
             string container,
             string blobName,
             TokenCredential credential,
-            ILoggerFactory loggerFactory) =>
+            ILogger logger) =>
                 builder.Add(new BlobStorageConfigurationSource(
-                    account, container, blobName, credential, loggerFactory));
+                    account, container, blobName, credential, logger));
     }
 }
